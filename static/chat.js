@@ -1,8 +1,15 @@
 function addMessage(message) {
     let chat = document.querySelector('#chat');
     let container = document.createElement('div');
+    if (message.type === 'info') {
+        container.classList.add('text-center');
+    } else if (message.username === localStorage.getItem('username')) {
+        container.classList.add('text-right');
+    } else {
+        container.classList.add('text-left');
+    }
     let newMessage = document.createElement('p');
-    newMessage.classList.add('m-0')
+    newMessage.classList.add('m-0');
     newMessage.innerText = message.message;
     let timestamp = document.createElement('small');
     timestamp.classList.add('text-muted');
@@ -12,18 +19,14 @@ function addMessage(message) {
     chat.appendChild(container);
 }
 
+localStorage.setItem('username', 'pat');
+
 var socket = io();
+
 socket.on('connect', function() {
-    socket.emit('json', {
-        message: 'I\'m connected!',
-        timestamp: new Date(),
-        room: 'main'
-    });
-    socket.emit('join', {
-        username: 'User A',
-        room: 'main'
-    });
+    socket.emit('join', {username: localStorage.getItem('username'), room: 'main'});
 });
+
 socket.on('json', function(response) {
     addMessage(response);
 });
@@ -41,6 +44,8 @@ function handleNewMessage() {
     let data = {
         message: message.value,
         timestamp: new Date(),
+        type: 'sent',
+        username: localStorage.getItem('username'),
         room: 'main'
     };
     sendMessage(data);
