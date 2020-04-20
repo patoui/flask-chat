@@ -27,6 +27,7 @@ def on_join(data):
     send({
         'message': username + ' has entered the room.',
         'timestamp': datetime.datetime.now().isoformat(),
+        'username': None,
         'type': 'info'
     }, room=room)
 
@@ -38,7 +39,9 @@ def on_leave(data):
     leave_room(room)
     send({
         'message': username + ' has left the room.',
-        'timestamp': datetime.datetime.now().isoformat()
+        'timestamp': datetime.datetime.now().isoformat(),
+        'username': None,
+        'type': 'info'
     }, room=room)
 
 
