@@ -1,58 +1,28 @@
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
     <title>Chat</title>
 </head>
 <body>
-<h1>Welcome pChat!</h1>
-<div id="chat"></div>
-<div>
-    <input type="text" id="message" name="message" placeholder="New Message">
-    <button type="button" id="send">Send</button>
+<div class="container pt-4">
+    <h1>Welcome pChat!</h1>
+    <hr>
+    <div id="chat" class="mb-2"></div>
+    <hr>
+    <div class="form-inline">
+        <input type="text" id="message" name="message" placeholder="New Message" class="form-control mr-2">
+        <button type="button" id="send" class="btn btn-primary">Send</button>
+    </div>
 </div>
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
         integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-<script type="text/javascript" charset="utf-8">
-function addMessage(message) {
-    let chat = document.querySelector('#chat');
-    let newMessage = document.createElement('p');
-    newMessage.innerText = message.message;
-    let timestamp = document.createElement('small');
-    let dt = new Date(message.datetime);
-    timestamp.innerText = dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds();
-    newMessage.appendChild(timestamp);
-    chat.appendChild(newMessage);
-}
-
-var socket = io();
-socket.on('connect', function() {
-    socket.emit('json', {
-        message: 'I\'m connected!',
-        datetime: new Date(),
-        room: 'main'
-    });
-    socket.emit('join', {
-        username: 'User A',
-        room: 'main'
-    });
-});
-socket.on('json', function(response) {
-    addMessage(response);
-});
-
-function sendMessage(message) {
-    socket.emit('json', message);
-}
-
-document.querySelector('#send').addEventListener('click', function () {
-    let message = document.querySelector('#message');
-    let data = {
-        message: message.value,
-        datetime: new Date(),
-        room: 'main'
-    };
-    sendMessage(data);
-    message.value = '';
-});
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="{{ url_for('static', filename='chat.js') }}"></script>
 </body>
 </html>
