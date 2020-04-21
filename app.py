@@ -1,14 +1,26 @@
 import datetime
 from flask import Flask, render_template
-from flask_socketio import SocketIO, join_room, leave_room, send, emit
-
+from flask_socketio import SocketIO, join_room, leave_room, send
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
+auth = HTTPBasicAuth()
+
+users = {'secret': generate_password_hash('secret')}
+
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users:
+        return check_password_hash(users.get(username), password)
+    return False
 
 
 @app.route('/')
+@auth.login_required
 def root():
     return render_template('index.html')
 
