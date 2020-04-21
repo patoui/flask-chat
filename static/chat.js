@@ -93,4 +93,12 @@ window.onload = function () {
         localStorage.setItem('username', username);
         startChat();
     }
+
+    document.querySelector('#edit_username').addEventListener('click', function () {
+        let username;
+        while (!username) {
+            username = window.prompt('What is your username?').trim();
+        }
+        localStorage.setItem('username', username);
+    });
 }
