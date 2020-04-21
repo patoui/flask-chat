@@ -1,28 +1,50 @@
 window.onload = function () {
+    var socket;
+
     function addMessage(message) {
         let chat = document.querySelector('#chat');
+        let wrapper = document.createElement('div');
+        wrapper.classList.add('d-flex', 'mb-3');
+
         let container = document.createElement('div');
-        if (message.type === 'info') {
-            container.classList.add('text-center');
-        } else if (message.username === localStorage.getItem('username')) {
-            container.classList.add('text-right');
-        } else {
-            container.classList.add('text-left');
-        }
+        container.classList.add('w-75', 'd-flex', 'flex-column');
+
         let newMessage = document.createElement('p');
-        newMessage.classList.add('m-0');
+        newMessage.classList.add('m-0', 'py-2', 'px-3');
+        newMessage.style.borderRadius = '15px';
         newMessage.innerText = message.message;
+
+        if (message.type === 'info') {
+            wrapper.classList.add('text-center');
+            container.classList.add('mx-auto');
+        } else if (message.username === localStorage.getItem('username')) {
+            wrapper.classList.add('text-right');
+            container.classList.add('ml-auto');
+            newMessage.classList.add('ml-auto', 'text-white', 'bg-primary');
+        } else {
+            wrapper.classList.add('text-left');
+            container.classList.add('mr-auto');
+            newMessage.classList.add('mr-auto', 'text-dark', 'bg-light');
+        }
+
         let timestamp = document.createElement('small');
-        timestamp.classList.add('text-muted');
-        timestamp.innerText = moment(message.timestamp).format('HH:mm:ss MMM Do');
+        timestamp.classList.add('text-black-50');
+        let footer = '';
+
+        if (message.type !== 'info') {
+            footer = message.username + ' &middot; ';
+        }
+        footer += moment(message.timestamp).format('HH:mm MMM Do');
+        timestamp.innerHTML = footer;
+
         container.appendChild(newMessage);
         container.appendChild(timestamp);
-        chat.appendChild(container);
+        wrapper.appendChild(container);
+        chat.appendChild(wrapper);
     }
 
     function startChat() {
-        var socket = io();
-
+        socket = io();
         socket.on('connect', function() {
             socket.emit('join', {username: localStorage.getItem('username'), room: 'main'});
         });
